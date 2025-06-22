@@ -10,7 +10,7 @@ dt=0.001
 time2= np.linspace(0,nt*dt,nt+1)
 p_old,p,p_new = (np.zeros(nx) for _ in range(3))
 c = np.zeros(nx) + 700
-c= c + -300/249**2 * (np.arange(nx)-249)**2
+# c= c + -300/249**2 * (np.arange(nx)-249)**2
 domain =np.arange(0, nx*dx, dx)
 ### Source time function
 f0=25.
@@ -21,7 +21,7 @@ def src_func(time):
     return -2. * (time-t0) * (f0 ** 2) * (np.exp(-1.0 * (f0 **2) * (time - t0) ** 2))
 isrc = round(nx/2)
 ### Boundary conditions
-boundary = 'zero'  
+boundary = 'neumann'  
 
 ### Plot setup
 fig,ax = plt.subplots(figsize=(10, 5))

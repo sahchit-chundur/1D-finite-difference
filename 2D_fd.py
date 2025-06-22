@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import plotly.graph_objects as go
 import time as timel
 ### Initial conditions
 nx=500 ## Number of x grid points
@@ -10,9 +11,9 @@ dx=1
 dy=1
 dt=0.001
 time2= np.linspace(0,nt*dt,nt+1)
-p_old,p,p_new = (np.zeros(ny,nx) for _ in range(3))
+p_old,p,p_new = (np.zeros(nx,ny) for _ in range(3))
 c = np.zeros(nx,ny) + 700
-# c= c + -300/249**2 * (np.arange(nx,ny)-249)**2
+# c= c + -300/249**2 * (np.arange(nx,ny)-249)**2co
 domain_x,domain_y =np.meshgrid(np.arange(0, nx*dx, dx), np.arange(0, ny*dy, dy))
 ### Source time function
 f0=100.
@@ -41,15 +42,20 @@ def five_pt_stencil(frame):
     p_old = p.copy()
     p=p_new.copy()
     if boundary == 'zero':
-        p_new[0:1] = 0
-        p_new[-2:] = 0
+        p_new[0:1,:] = 0
+        p_new[-2:,] = 0
+        p_new[:,0:1] = 0
+        p_new[:,-2:] = 0
     elif boundary == 'neumann':
-        p_new[0:1] = p_new[2]
-        p_new[-2:] = p_new[-3]
+        p_new[0:1,:] = p_new[2]
+        p_new[-2:,:] = p_new[-3]
+        p_new[:,0:1] = p_new[:,2]
+        p_new[:,-2:] = p_new[:,-3]
     # elif boundary == 'absorbing':
     #     p_new[0:1] = p_new[2:]
     #     p_new[-2:] = 0
     #     ax.set_ylim(np.min(p), np.max(p))
+    
     t+=1
     if t%5==0:
         return(line1,)
