@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import time as timel
+from matplotlib.animation import writers
+import ffmpeg
 ### Initial conditions
 nx=500 ## Number of grid points
 nt=5000 ## Number of time steps
@@ -55,9 +56,12 @@ def five_pt_stencil(frame):
     p=p_new.copy()
     line1.set_ydata(p)
     ax.set_ylim(np.min(p), np.max(p))
-    ax.set_title(f'Time = {t*dt:.3f} s')
+    ax.set_title(f'CFL= {cfl:.2f}, Time = {t*dt:.3f} s')
     t+=1
     if t%5==0:
         return(line1,)
 ani = animation.FuncAnimation(fig, func= five_pt_stencil, frames=np.arange(0,500,5), interval=1, blit=False)
+Writer = writers['ffmpeg']
+writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+ani.save('1D_fd.mp4', writer=writer)
 plt.show()
