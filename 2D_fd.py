@@ -59,10 +59,11 @@ def five_pt_stencil(frame):
     p=p_new.copy()
     t += 1
     line1.set_data(p)
+    line1.autoscale()
     ax.set_ylim(np.min(p), np.max(p))
     ax.set_title(f'Time = {t*dt:.3f} s')
     if t%5==0:
         return(line1)
-ani = animation.FuncAnimation(fig, func= five_pt_stencil, frames=np.arange(0,500,5), interval=1, blit=False)
+ani = animation.FuncAnimation(fig, func= five_pt_stencil, frames=np.arange(0,1000,5), interval=1, blit=False)
 plt.show()
        
