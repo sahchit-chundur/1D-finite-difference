@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import mayavi.mlab as mlab
-import time as timel
+from mpl_toolkits.mplot3d import Axes3D
+import subprocess
+# import mayavi.mlab as mlab
+# import time as timel
 ### Initial conditions
 nx=500 ## Number of x grid points
 ny =500 ## Number of y grid points
@@ -33,11 +35,13 @@ if cfl > 1:
     print(f'Warning: CFL condition violated! CFL = {cfl:.2f} > 1.0')
 else:
     print(f'CFL condition satisfied. CFL = {cfl:.2f} <= 1.0')
-fig,ax = plt.subplots(figsize=(10, 5))
-line1= ax.imshow(p)
+# fig,ax = plt.subplots(figsize=(10, 5))
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')# line1= ax.imshow(p)
+plot = [ax.plot_surface(domain_x, domain_y, p, cmap='magma', edgecolor='none')]
 # ### Solver
 t=0
-def five_pt_stencil(frame):
+def five_pt_stencil(plot):
     global p,p_old,p_new, t 
     for x in np.arange(2, nx-2, 1):
         for y in np.arange(2, ny-2, 1):
@@ -58,12 +62,16 @@ def five_pt_stencil(frame):
     p_old = p.copy()
     p=p_new.copy()
     t += 1
-    line1.set_data(p)
-    line1.autoscale()
-    ax.set_ylim(np.min(p), np.max(p))
+    plot[0].remove()
+    plot[0] = ax.plot_surface(domain_x, domain_y, p, cmap='magma', edgecolor='none')
     ax.set_title(f'Time = {t*dt:.3f} s')
-    if t%5==0:
-        return(line1)
-ani = animation.FuncAnimation(fig, func= five_pt_stencil, frames=np.arange(0,1000,5), interval=1, blit=False)
-plt.show()
+    
+ani = animation.FuncAnimation(fig, func= five_pt_stencil, frames=np.arange(0,1000,5), interval=10, blit=False)
+fn = 'surface_2D_fd'
+ani.save(fn+'.mp4',writer='ffmpeg',fps=20)
+ani.save(fn+'.gif',writer='imagemagick',fps=20)
+cmd = 'magick convert %s.gif -fuzz 5%% -layers Optimize %s_r.gif'%(fn,fn)
+subprocess.check_output(cmd)
+
+
        

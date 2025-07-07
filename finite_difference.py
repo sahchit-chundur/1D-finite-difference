@@ -10,7 +10,8 @@ dt=0.001
 time2= np.linspace(0,nt*dt,nt+1)
 p_old,p,p_new = (np.zeros(nx) for _ in range(3))
 c0=700
-c = np.zeros(nx) +c0
+c = np.zeros(nx) + c0
+# c[0:int(nx/4)] = c0 + 200
 # c= c + -300/249**2 * (np.arange(nx)-249)**2
 domain =np.arange(0, nx*dx, dx)
 ### Source time function
@@ -60,7 +61,7 @@ def five_pt_stencil(frame):
     if t%5==0:
         return(line1,)
 ani = animation.FuncAnimation(fig, func= five_pt_stencil, frames=np.arange(0,10000,5), interval=1, blit=False)
-Writer = writers['ffmpeg']
-writer = Writer(fps=60, metadata=dict(artist='Me'), bitrate=1800)
-ani.save('1D_fd.mp4', writer=writer)
+# Writer = writers['ffmpeg']
+# writer = Writer(fps=60, metadata=dict(artist='Me'), bitrate=1800)
+# ani.save('1D_fd.mp4', writer=writer)
 plt.show()
